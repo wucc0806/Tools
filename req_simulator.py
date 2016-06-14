@@ -99,7 +99,8 @@ class ReqSimulator(object):
         self.req = copy.deepcopy(demo_req)
         self.adtype = self.get_adtype()
         self.update_req_validation(app_conf)
-        self.req_url = 'http://127.0.0.1:8090'
+        self.has_extra_process = True
+        self.req_url = 'http://127.0.0.1:8999'
         self.req_succ = 0
         self.req_fail = 0
         self.send_win = 0
@@ -110,6 +111,9 @@ class ReqSimulator(object):
         self.send_clk_fail = 0
         self.win_rate = 100
         self.click_rate = 100
+        self.is_test_pv = True
+        self.bridge_version = "1.0"
+        self.vendor_id = "brssp"
 
     def run(self, req_count):
         try:
@@ -131,11 +135,7 @@ class ReqSimulator(object):
     def do_send_request(self):
         try:
             self.sid = uuid.uuid1().hex
-            req_headers = {
-                'content-type': 'application/json',
-                'x-bridge-version': '1.0',
-                'x-vendor-id': 'brssp'
-            }
+            req_headers = self.get_req_headers()
     
             json_str = json.dumps(self.req, ensure_ascii=False, encoding='utf-8')
             start_time = time.time()
@@ -161,6 +161,15 @@ class ReqSimulator(object):
             exc_type, exc_value, exc_traceback = sys.exc_info()
             raise exc_type, exc_value, exc_traceback
 
+    def get_req_headers(self):
+        headers = {}
+        headers['content-type'] = 'application/json'
+        headers['x-bridge-version'] = self.bridge_version
+        headers['x-vendor-id'] = self.vendor_id
+        if self.is_test_pv:
+            headers['x-is-test'] = 'Y'
+        return headers
+
     def get_adtype(self):
         adtype = 'banner'
         for imp in self.req['imp']:
@@ -179,10 +188,16 @@ class ReqSimulator(object):
             self.req['token'] = md5.hexdigest()
 
             self.req['imp'][0][self.adtype]['id'] = app_conf['lid']
+            if self.has_extra_process:
+                self.extra_process()
         except Exception, ex:
             error_msg = self.get_traceback_msg(ex)
             LOGGER.error('init exception: %s' % error_msg)
 
+    def extra_process(self):
+        self.req['imp'][0]['banner']['w'] = 320
+        self.req['imp'][0]['banner']['h'] = 50
+        
     def get_traceback_msg(self, ex):
         exc_type, exc_value, exc_traceback = sys.exc_info()
         msg = traceback.format_exception(exc_type, exc_value, exc_traceback)
@@ -238,13 +253,13 @@ class ReqSimulator(object):
                         start_time = time.time()
                         rsp_click = requests.get(clk_url)
                         end_time = time.time()
-                        self.send_click += 1
+                        self.send_clk += 1
                         result = ''
                         if rsp_click.status_code != 200:
-                            self.send_click_fail += 1
+                            self.send_clk_fail += 1
                             result = 'failed'
                         else:
-                            self.send_click_succ += 1
+                            self.send_clk_succ += 1
                             result = 'succeed'
 
                         LOGGER.log_click("sid: %s, send result: %s, spend time: %s ms, url: %s" % (
@@ -261,7 +276,8 @@ def main():
         'lid': '522c9530e75211e5a337001c42998040'
     }
 
-    req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_banner_req, app_conf)
+    #req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_banner_req, app_conf)
+    req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_native_req, app_conf)
     req_simulator.run(1)
 
 if __name__ == '__main__':
