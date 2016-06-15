@@ -13,94 +13,24 @@ import datetime
 import time
 import hashlib
 import copy
-import os
 import sys
 import chardet
 import threading
-import logging
 import traceback
-from logging.handlers import TimedRotatingFileHandler
 import template.bridge_demo_json as bridge_demo_json
+import media_request
+import logger_allocator
+import app_conf
 
-class LoggerAllocator(object):
-
-    def __init__(self):
-        logfile_path = os.popen('pwd').read().strip()
-        log_dir = os.path.join(logfile_path, 'test_log')
-        if not os.path.exists(log_dir):
-            os.makedirs(log_dir)
-
-        #test
-        logfile_name = os.path.join(logfile_path, 'test_log/test.log')
-        file_fmt = logging.Formatter('%(asctime)s - [%(name)s]: %(message)s')
-        file_handler = logging.handlers.TimedRotatingFileHandler(logfile_name, when='midnight', interval=1)
-        file_handler.setFormatter(file_fmt)
-        self.logger = logging.getLogger('test')
-        self.logger.addHandler(file_handler)
-        self.logger.setLevel(logging.DEBUG)
-
-        #win
-        win_logfile_name = os.path.join(logfile_path, 'test_log/win.log')
-        win_file_fmt = logging.Formatter('%(asctime)s - [%(name)s]: %(message)s')
-        win_file_handler = logging.handlers.TimedRotatingFileHandler(win_logfile_name, when='midnight', interval=1)
-        win_file_handler.setFormatter(win_file_fmt)
-        self.win_logger = logging.getLogger('win')
-        self.win_logger.addHandler(win_file_handler)
-        self.win_logger.setLevel(logging.INFO)
-
-        #click
-        click_logfile_name = os.path.join(logfile_path, 'test_log/click.log')
-        click_file_fmt = logging.Formatter('%(asctime)s - [%(name)s]: %(message)s')
-        click_file_handler = logging.handlers.TimedRotatingFileHandler(click_logfile_name, when='midnight', interval=1)
-        click_file_handler.setFormatter(click_file_fmt)
-        self.click_logger = logging.getLogger('click')
-        self.click_logger.addHandler(click_file_handler)
-        self.click_logger.setLevel(logging.INFO)
-
-        # error.log
-        error_logfile_name = os.path.join(logfile_path, 'test_log/error.log')
-        error_file_fmt = logging.Formatter('%(asctime)s - [%(name)s]: %(message)s')
-        error_file_handler = logging.handlers.TimedRotatingFileHandler(error_logfile_name, when='midnight', interval=1)
-        error_file_handler.setFormatter(error_file_fmt)
-        self.error_logger = logging.getLogger('error')
-        self.error_logger.addHandler(error_file_handler)
-        self.error_logger.setLevel(logging.ERROR)
-
-        #count
-        logfile_name = os.path.join(logfile_path, 'test_log/count.log')
-        file_fmt = logging.Formatter('%(asctime)s - [%(name)s]: %(message)s')
-        file_handler = logging.handlers.TimedRotatingFileHandler(logfile_name, when='midnight', interval=1)
-        file_handler.setFormatter(file_fmt)
-        self.count_logger = logging.getLogger('count')
-        self.count_logger.addHandler(file_handler)
-        self.count_logger.setLevel(logging.INFO)
-
-    def log_test(self, msg):
-        self.logger.debug(msg)
-
-    def log_win(self, msg):
-        self.win_logger.info(msg)
-
-    def log_click(self, msg):
-        self.click_logger.info(msg)
-
-    def log_count(self, msg):
-        self.count_logger.info(msg)
-
-    def error(self, msg):
-        self.error_logger.error(msg)
-
-LOGGER = LoggerAllocator()
-
+LOGGER = logger_allocator.LOGGER
 
 class ReqSimulator(object):
 
     def __init__(self, demo_req, app_conf):
         self.req = copy.deepcopy(demo_req)
         self.adtype = self.get_adtype()
+        self.manual_config()
         self.update_req_validation(app_conf)
-        self.has_extra_process = True
-        self.req_url = 'http://127.0.0.1:8999'
         self.req_succ = 0
         self.req_fail = 0
         self.send_win = 0
@@ -109,11 +39,38 @@ class ReqSimulator(object):
         self.send_clk = 0
         self.send_clk_succ = 0
         self.send_clk_fail = 0
+
+    def manual_config(self):
         self.win_rate = 100
         self.click_rate = 100
-        self.is_test_pv = True
+        self.send_win_click_switch = False
+
+        self.req_url = 'http://127.0.0.1:8999'
+        self.has_extra_process = False
+        self.is_test_pv = False
         self.bridge_version = "1.0"
         self.vendor_id = "brssp"
+
+    def update_req_validation(self, app_conf):
+        try:
+            self.req['app']['id'] = app_conf['appid']
+            self.req['time'] = str(int(time.time() * 1000))
+
+            md5 = hashlib.md5()
+            md5.update(app_conf['appid']+ app_conf['key'] + self.req['time'])
+            self.req['token'] = md5.hexdigest()
+
+            self.req['imp'][0][self.adtype]['id'] = app_conf['lid']
+            if self.has_extra_process:
+                self.extra_process()
+        except Exception, ex:
+            error_msg = self.get_traceback_msg(ex)
+            LOGGER.error('init exception: %s' % error_msg)
+
+    def extra_process(self):
+        self.req['imp'][0]['banner']['w'] = 320
+        self.req['imp'][0]['banner']['h'] = 50
+        return
 
     def run(self, req_count):
         try:
@@ -150,8 +107,9 @@ class ReqSimulator(object):
                     json.dumps(json.loads(rsp.text), sort_keys=False, indent=4, separators=(',', ': '))))
 
                 self.req_succ += 1
-                win_urls, clk_urls = self.get_callback_urls(rsp_content)
-                self.call_urls(win_urls, clk_urls)
+                if self.send_win_click_switch:
+                    win_urls, clk_urls = self.get_callback_urls(rsp_content)
+                    self.call_urls(win_urls, clk_urls)
             else:
                 self.req_fail += 1
                 LOGGER.log_test("failed, spend time: %s ms, rsp.status_code: %s, rsp.text: %s" % (
@@ -178,26 +136,6 @@ class ReqSimulator(object):
                 break
         return adtype
 
-    def update_req_validation(self, app_conf):
-        try:
-            self.req['app']['id'] = app_conf['appid']
-            self.req['time'] = str(int(time.time() * 1000))
-
-            md5 = hashlib.md5()
-            md5.update(app_conf['appid']+ app_conf['key'] + self.req['time'])
-            self.req['token'] = md5.hexdigest()
-
-            self.req['imp'][0][self.adtype]['id'] = app_conf['lid']
-            if self.has_extra_process:
-                self.extra_process()
-        except Exception, ex:
-            error_msg = self.get_traceback_msg(ex)
-            LOGGER.error('init exception: %s' % error_msg)
-
-    def extra_process(self):
-        self.req['imp'][0]['banner']['w'] = 320
-        self.req['imp'][0]['banner']['h'] = 50
-        
     def get_traceback_msg(self, ex):
         exc_type, exc_value, exc_traceback = sys.exc_info()
         msg = traceback.format_exception(exc_type, exc_value, exc_traceback)
@@ -270,14 +208,8 @@ class ReqSimulator(object):
 
 
 def main():
-    app_conf = {
-        'appid': '5e9a8fe4e75211e5a337001c42998040',
-        'key': '4114636ce75211e5a337001c42998040',
-        'lid': '522c9530e75211e5a337001c42998040'
-    }
-
     #req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_banner_req, app_conf)
-    req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_native_req, app_conf)
+    req_simulator = ReqSimulator(media_request.u_jian_req, app_conf.u_jian)
     req_simulator.run(1)
 
 if __name__ == '__main__':
