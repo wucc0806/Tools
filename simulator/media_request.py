@@ -104,3 +104,68 @@ u_jian_req = {
         "sd": 428
     }
 }
+
+bingdu_req = {
+    "app": {
+        "name": "Bingdu", 
+        "ver": "2.1.1", 
+        "id": "ee22a7a210ed11e68ca8fa163eb888f3", 
+        "bundle": "com.nhzw.bingdu", 
+        "cat": [
+            "2109"
+        ]
+    }, 
+    "reqid": "cf0be5c78acc4a36857f1675c4011cd9", 
+    "imp": [
+        {
+            "id": "8b8656fd5a5547f3b2a9bc8d2f6b0ce1", 
+            "native": {
+                "adtype": 101, 
+                "id": "f1b9a6b810ed11e68ca8fa163eb888f3", 
+                "adslot": {
+                    "image": [
+                        {
+                            "h": 360, 
+                            "imgtyp": 301, 
+                            "id": "301", 
+                            "w": 720
+                        }
+                    ], 
+                    "word": [
+                        {
+                            "max": 22, 
+                            "wtyp": 1, 
+                            "id": "1"
+                        }
+                    ]
+                }
+            }
+        }
+    ], 
+    "token": "7f1e12a0f05cf3b5ec35224e8ad900f7", 
+    "api": "1.0", 
+    "time": "1466407811551", 
+    "device": {
+        "os": 2, 
+        "brand": "alps", 
+        "sw": 720, 
+        "connectiontype": 1, 
+        "osv": "4.4.2", 
+        "carrier": "46000", 
+        "mac": "000822096149", 
+        "sh": 1280, 
+        "adid": "e4715b3cf800de48", 
+        "did": "e4715b3cf800de48", 
+        "ip": "120.236.120.62", 
+        "devicetype": 1, 
+        "model": "DESAY X5", 
+        "geo": {
+            "lat": 23.117815, 
+            "lon": 114.418377, 
+            "type": 1, 
+            "country": "CHN"
+        }, 
+        "make": "alps", 
+        "sd": 428
+    }
+}

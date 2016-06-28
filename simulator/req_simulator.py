@@ -47,7 +47,7 @@ class ReqSimulator(object):
 
         self.req_url = 'http://127.0.0.1:8999'
         self.has_extra_process = False
-        self.is_test_pv = False
+        self.is_test_pv = True
         self.bridge_version = "1.0"
         self.vendor_id = "brssp"
 
@@ -68,9 +68,8 @@ class ReqSimulator(object):
             LOGGER.error('init exception: %s' % error_msg)
 
     def extra_process(self):
-        self.req['imp'][0]['banner']['w'] = 320
-        self.req['imp'][0]['banner']['h'] = 50
-        return
+        self.req['imp'][0]['banner']['w'] = 1080
+        self.req['imp'][0]['banner']['h'] = 234
 
     def run(self, req_count):
         try:
@@ -96,7 +95,7 @@ class ReqSimulator(object):
     
             json_str = json.dumps(self.req, ensure_ascii=False, encoding='utf-8')
             start_time = time.time()
-            rsp = requests.post(self.req_url, data=json_str, headers=req_headers, timeout=1)
+            rsp = requests.post(self.req_url, data=json_str, headers=req_headers, timeout=3)
             end_time = time.time()
             rsp_content = json.loads(rsp.content)
     
@@ -121,7 +120,7 @@ class ReqSimulator(object):
 
     def get_req_headers(self):
         headers = {}
-        headers['content-type'] = 'application/json'
+        headers['Content-Type'] = 'application/json'
         headers['x-bridge-version'] = self.bridge_version
         headers['x-vendor-id'] = self.vendor_id
         if self.is_test_pv:
@@ -208,8 +207,10 @@ class ReqSimulator(object):
 
 
 def main():
-    #req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_banner_req, app_conf)
-    req_simulator = ReqSimulator(media_request.u_jian_req, app_conf.u_jian)
+    req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_banner_req, app_conf.test)
+    #req_simulator = ReqSimulator(media_request.freebook_req, app_conf.freebook)
+    #req_simulator = ReqSimulator(media_request.u_jian_req, app_conf.u_jian)
+    #req_simulator = ReqSimulator(media_request.bingdu_req, app_conf.bingdu)
     req_simulator.run(1)
 
 if __name__ == '__main__':
