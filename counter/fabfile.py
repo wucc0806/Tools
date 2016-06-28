@@ -19,6 +19,7 @@ def do_bridge_task(appid, time):
     global PV
     with cd('/home/work/pyrun_env/bridge/log'):
         cmd = "cat pv.st*.log.%s | grep -c \"%s\"" % (time, appid)
+        #cmd = "cat pv.st*.log.%s | grep \"%s\" | grep -c \"\\\\\"os\\\\\": 2\"" % (time, appid)
         output = run(cmd)
         if output.succeeded:
             PV += int(output)
@@ -46,7 +47,7 @@ def print_info(appid, time, supplier):
 def task(appid, time, supplier):
     try:
         execute(do_bridge_task, appid, time)
-        execute(do_hig_task, appid, time, supplier)
+        #execute(do_hig_task, appid, time, supplier)
         print_info(appid, time, supplier)
     except:
         traceback.print_exc()
