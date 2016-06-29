@@ -18,8 +18,11 @@ env.roledefs = {
 def do_bridge_task(appid, time):
     global PV
     with cd('/home/work/pyrun_env/bridge/log'):
-        cmd = "cat pv.st*.log.%s | grep -c \"%s\"" % (time, appid)
-        #cmd = "cat pv.st*.log.%s | grep \"%s\" | grep -c \"\\\\\"os\\\\\": 2\"" % (time, appid)
+        if time == 'today':
+            cmd = "cat pv.st?.log pv.st10.log | grep -c \"%s\"" % appid
+        else:
+            cmd = "cat pv.st*.log.%s | grep -c \"%s\"" % (time, appid)
+            #cmd = "cat pv.st*.log.%s | grep \"%s\" | grep -c \"\\\\\"os\\\\\": 2\"" % (time, appid)
         output = run(cmd)
         if output.succeeded:
             PV += int(output)
