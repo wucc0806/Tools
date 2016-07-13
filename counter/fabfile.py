@@ -15,30 +15,30 @@ env.roledefs = {
 }
 
 @roles('bridge_server')
-def do_bridge_task(appid, time):
+def do_bridge_task(appid, time, os):
     global PV
     with cd('/home/work/pyrun_env/bridge/log'):
         if time == 'today':
             cmd = "cat pv.st?.log pv.st10.log | grep -c \"%s\"" % appid
         else:
-            cmd = "cat pv.st*.log.%s | grep -c \"%s\"" % (time, appid)
-            #cmd = "cat pv.st*.log.%s | grep \"%s\" | grep -c \"\\\\\"os\\\\\": 2\"" % (time, appid)
+            #cmd = "cat pv.st*.log.%s | grep -c \"%s\"" % (time, appid)
+            cmd = "cat pv.st*.log.%s | grep \"%s\" | grep -c \"\\\\\"os\\\\\": %s\"" % (time, appid, os)
         output = run(cmd)
         if output.succeeded:
             PV += int(output)
 
 @roles('hig_server')
-def do_hig_task(appid, time, supplier):
+def do_hig_task(appid, time, supplier, os):
     global WIN
     global CLICK
     with cd('/home/work/pyrun_env/hig/callback_server/log'):
-        cmd = "cat win/win.st*.log.%s | grep \"%s\" | grep \"%s\" \
-            | cut -d \" \" -f 16 | sort | uniq -u | wc -l" % (time, appid, supplier)
+        cmd = "cat win/win.st*.log.%s* | grep \"%s\" | grep \"%s\" | grep  \"\\\\\"os\\\\\": \\\\\"%s\\\\\"\"\
+            | cut -d \" \" -f 40 | sort | uniq -u | wc -l" % (time, appid, supplier, os)
         output = run(cmd)
         if output.succeeded:
             WIN += int(output)
-        cmd = "cat click/click.st*.log.%s | grep \"%s\" | grep \"%s\" \
-            | cut -d \" \" -f 16 | sort | uniq -u | wc -l" % (time, appid, supplier)
+        cmd = "cat click/click.st*.log.%s* | grep \"%s\" | grep \"%s\" | grep \"\\\\\"os\\\\\": \\\\\"%s\\\\\"\"\
+            | cut -d \" \" -f 40 | sort | uniq -u | wc -l" % (time, appid, supplier, os)
         output = run(cmd)
         if output.succeeded:
             CLICK += int(output)
@@ -47,10 +47,10 @@ def print_info(appid, time, supplier):
     print ("appid: %s, time: %s, pv: %s, supplier: %s, win: %s, click: %s" % (
         appid, time, PV, supplier, WIN, CLICK))
 
-def task(appid, time, supplier):
+def task(appid, time, supplier, os):
     try:
-        execute(do_bridge_task, appid, time)
-        #execute(do_hig_task, appid, time, supplier)
+        execute(do_bridge_task, appid, time, os)
+        execute(do_hig_task, appid, time, supplier, os)
         print_info(appid, time, supplier)
     except:
         traceback.print_exc()
