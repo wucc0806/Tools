@@ -30,7 +30,7 @@ class ReqSimulator(object):
         self.req = copy.deepcopy(demo_req)
         self.adtype = self.get_adtype()
         self.manual_config()
-        self.update_req_validation(app_conf)
+        #self.update_req_validation(app_conf)
         self.req_succ = 0
         self.req_fail = 0
         self.send_win = 0
@@ -45,9 +45,10 @@ class ReqSimulator(object):
         self.click_rate = 100
         self.send_win_click_switch = False
 
-        self.req_url = 'http://127.0.0.1:8999'
+        #self.req_url = 'http://127.0.0.1:8999'
+        self.req_url = 'http://180.76.146.215:8089'
         self.has_extra_process = False
-        self.is_test_pv = True
+        self.is_test_pv = False
         self.bridge_version = "1.0"
         self.vendor_id = "brssp"
 
@@ -207,10 +208,14 @@ class ReqSimulator(object):
 
 
 def main():
-    req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_banner_req, app_conf.test)
+    #req_simulator = ReqSimulator(bridge_demo_json.bridge_demo_banner_req, app_conf.test)
     #req_simulator = ReqSimulator(media_request.freebook_req, app_conf.freebook)
     #req_simulator = ReqSimulator(media_request.u_jian_req, app_conf.u_jian)
-    #req_simulator = ReqSimulator(media_request.bingdu_req, app_conf.bingdu)
+
+    #req_simulator = ReqSimulator(media_request.mchang_mult_banner, app_conf.mchang)
+    #req_simulator = ReqSimulator(media_request.bingdu_ios_req, app_conf.mchang)
+    #req_simulator = ReqSimulator(media_request.mchang_req, app_conf.mchang)
+    req_simulator = ReqSimulator(media_request.damao_req_today, app_conf.mchang)
     req_simulator.run(1)
 
 if __name__ == '__main__':

@@ -24,3 +24,9 @@ freebook = {
     'key': '4d00d67831f911e6968afa163e9d827b',
     'lid': '4ffde1fe31f911e6968afa163e9d827b'
 }
+
+mchang = {
+    'appid': '100001',
+    'key': '19ff40c43e9811e68440fa163e9d827b',
+    'lid': '10000001'
+}
