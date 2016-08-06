@@ -45,8 +45,8 @@ class ReqSimulator(object):
         self.click_rate = 100
         self.send_win_click_switch = False
 
-        #self.req_url = 'http://127.0.0.1:8999'
-        self.req_url = 'http://180.76.146.215:8089'
+        self.req_url = 'http://127.0.0.1:8999'
+        #self.req_url = 'http://180.76.146.215:8089'
         self.has_extra_process = False
         self.is_test_pv = False
         self.bridge_version = "1.0"
@@ -215,7 +215,8 @@ def main():
     #req_simulator = ReqSimulator(media_request.mchang_mult_banner, app_conf.mchang)
     #req_simulator = ReqSimulator(media_request.bingdu_ios_req, app_conf.mchang)
     #req_simulator = ReqSimulator(media_request.mchang_req, app_conf.mchang)
-    req_simulator = ReqSimulator(media_request.damao_req_today, app_conf.mchang)
+    #req_simulator = ReqSimulator(media_request.damao_req_3, app_conf.mchang)
+    req_simulator = ReqSimulator(media_request.bingdu_test, app_conf.mchang)
     req_simulator.run(1)
 
 if __name__ == '__main__':
