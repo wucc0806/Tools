@@ -4103,3 +4103,199 @@ zx_mult_req = {
     "token": "bc68be8ac6a7407e1085f4e7536192c7"
 }
 
+new_request = {
+    "apiv": "1.0",
+    "app": {
+      "bundle": "com.lqsoft.launcher",
+      "cat": [
+        "2402"
+      ],
+      "id": "100014",
+      "name": "LiveLauncher",
+      "ver": "1.0"
+    },
+    "device": {
+      "adid": "a9f38ce8e6c2339b",
+      "brand": "xiaolajiao",
+      "carrier": "00000",
+      "connectiontype": 1,
+      "devicetype": 1,
+      "did": "868270020000006",
+      "ip": "121.69.12.238",
+      "make": "xiaolajiao",
+      "model": "HLA NX",
+      "os": 2,
+      "osv": "5.1",
+      "sd": 480,
+      "sh": 1920,
+      "sw": 1080,
+      "ua": "Mozilla/5.0 (Linux; Android 5.1; HLA NX Build/LMY47D) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/39.0.0.0 Mobile Safari/537.36"
+    },
+    "imp": [
+      {
+        "id": "2e55ff0e3f0142a380947ca27d26affb",
+        "native": {
+          "adslot": {
+            "image": [
+              {
+                "h": 150,
+                "id": "19db8fcfe56b4985a98556f5ad213a82",
+                "imgtyp": 101,
+                "w": 150
+              },
+              {
+                "h": 405,
+                "id": "4bc1dc751d804396a28440bef39b2d4b",
+                "imgtyp": 301,
+                "w": 720
+              }
+            ],
+            "word": [
+              {
+                "id": "11050c19f9c74c32a2f4342549d002b2",
+                "max": 20,
+                "wtyp": 1
+              },
+              {
+                "id": "a1912d60762e43a1bb162ba3fef3fb3c",
+                "max": 40,
+                "wtyp": 2
+              },
+              {
+                "id": "64c0e8bbe2464e1db7d08de112d07a87",
+                "max": 40,
+                "wtyp": 6
+              }
+            ]
+          },
+          "adtype": 105,
+          "id": "10000024"
+        }
+      },
+      {
+        "id": "a2f553c0945746ad84d15687ffa225ba",
+        "native": {
+          "adslot": {
+            "image": [
+              {
+                "h": 150,
+                "id": "b24955c40e814b4cac5201809738550f",
+                "imgtyp": 101,
+                "w": 150
+              },
+              {
+                "h": 405,
+                "id": "6c44c47d14cb490599e85be98b9fa118",
+                "imgtyp": 301,
+                "w": 720
+              }
+            ],
+            "word": [
+              {
+                "id": "016295774c1b462292f839efbe30c46f",
+                "max": 20,
+                "wtyp": 1
+              },
+              {
+                "id": "79eeaa52244640b7b2872f3944aa0de3",
+                "max": 40,
+                "wtyp": 2
+              },
+              {
+                "id": "cfbbc6a36aa143c6a7028c5171f50b69",
+                "max": 40,
+                "wtyp": 6
+              }
+            ]
+          },
+          "adtype": 105,
+          "id": "10000024"
+        }
+      },
+      {
+        "id": "e4bb96e117fe4fcc8ba1bbe828cd818c",
+        "native": {
+          "adslot": {
+            "image": [
+              {
+                "h": 150,
+                "id": "95aea4c4069745caa089ce586b5b178a",
+                "imgtyp": 101,
+                "w": 150
+              },
+              {
+                "h": 405,
+                "id": "cce8d22b3cea443bbe456a0c19976e3d",
+                "imgtyp": 301,
+                "w": 720
+              }
+            ],
+            "word": [
+              {
+                "id": "bbb1285933834f9dabbc297012538dcf",
+                "max": 20,
+                "wtyp": 1
+              },
+              {
+                "id": "03656793cca24140a127e56ae23218b1",
+                "max": 40,
+                "wtyp": 2
+              },
+              {
+                "id": "f8a2f8c9c9604546a7aaed46b532d28d",
+                "max": 40,
+                "wtyp": 6
+              }
+            ]
+          },
+          "adtype": 105,
+          "id": "10000024"
+        }
+      },
+      {
+        "id": "3ae22dbdf46f4802a9e4fe83ce6341cb",
+        "native": {
+          "adslot": {
+            "image": [
+              {
+                "h": 150,
+                "id": "dc046e4923884e2c9a64b7641060389f",
+                "imgtyp": 101,
+                "w": 150
+              },
+              {
+                "h": 405,
+                "id": "f6ae0667d6234d51925c19b4b4c9c05f",
+                "imgtyp": 301,
+                "w": 720
+              }
+            ],
+            "word": [
+              {
+                "id": "9c92e9ae16784ebfa78ee9ec2184626a",
+                "max": 20,
+                "wtyp": 1
+              },
+              {
+                "id": "6c175fd97a58471b972194b24d5bdc28",
+                "max": 40,
+                "wtyp": 2
+              },
+              {
+                "id": "47e3749e086a43e69598a541b676c100",
+                "max": 40,
+                "wtyp": 6
+              }
+            ]
+          },
+          "adtype": 105,
+          "id": "10000024"
+        }
+      }
+    ],
+    "reqid": "48c307c4e6f34651bcca2011b1c3f803",
+    "time": "1471491499926",
+    "token": "d4d1f2eaea8ddfec9f3dd888132ffdec"
+  }
+
+
